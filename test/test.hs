@@ -79,7 +79,6 @@ orr v1 v2 = Lib.hashCons (Or v1 v2)
 
 testHashCons :: Test
 testHashCons = TestList
-
     [ "test hashCons" ~: do
         let formula1 = var "a"
         assertEqual "Testing hashCons" (Var "a") (Lib.getValue formula1)
@@ -102,12 +101,9 @@ testGC = TestCase $ do
     !table1 <- readMVar (Lib.getTable hc1)
     assertBool "Entry should exist before GC" (HashMap.member key table1)
 
-    -- performMajorGC
-    -- threadDelay 2000
+    performMajorGC
+    threadDelay 2000
  
     let !table = Lib.getTable hc1
     table2 <- readMVar table
     assertBool "Entry should not exist after GC" (not $ HashMap.member key table2)
-
-    
-    
