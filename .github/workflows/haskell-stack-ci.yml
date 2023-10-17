@@ -11,10 +11,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-<<<<<<< HEAD
     - name: running workFlow
       uses: sol/run-haskell-tests@v1
-=======
 
     - name: Set up Haskell
       uses: actions/setup-haskell@v1
@@ -25,7 +23,6 @@ jobs:
       run: |
         cabal update
         cabal build --enable-tests
-
+        
     - name: Test
       run: cabal test
->>>>>>> 6a66cc6 (Cabal update)
