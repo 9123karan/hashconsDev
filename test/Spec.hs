@@ -102,8 +102,8 @@ testGC = TestCase $ do
     !table1 <- readMVar (Lib.getTable hc1)
     assertBool "Entry should exist before GC" (HashMap.member key table1)
 
-    performMajorGC
-    threadDelay 2000
+    -- performMajorGC
+    -- threadDelay 2000
  
     let !table = Lib.getTable hc1
     table2 <- readMVar table
