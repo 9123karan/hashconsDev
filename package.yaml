@@ -1,18 +1,18 @@
 name:                hashcons
 version:             0.1.0.0
-github:              "githubuser/hashcons"
+github:              "karan9123/hashcons"
 license:             BSD-3-Clause
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2023 Author name here"
+author:              "Karan Ahluwalia"
+maintainer:          "karan9123@gmail.com"
+copyright:           "2023 Karan Ahluwalia"
 
 extra-source-files:
 - README.md
 - CHANGELOG.md
 
 # Metadata used when publishing your package
-# synopsis:            Short description of your package
-# category:            Web
+# synopsis:            Type-safe Modular Hash-Consing
+# category:            caching
 
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
@@ -21,6 +21,8 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
+- unordered-containers >= 0.2 && < 0.3
+- hashable >= 1.2 && < 1.5
 
 ghc-options:
 - -Wall
@@ -32,6 +34,7 @@ ghc-options:
 - -Wmissing-home-modules
 - -Wpartial-fields
 - -Wredundant-constraints
+- -fno-warn-unused-top-binds
 
 library:
   source-dirs: src
@@ -57,3 +60,6 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - hashcons
+    - HUnit >=1.6
+    - QuickCheck >=2.14
+    - async >=2.2

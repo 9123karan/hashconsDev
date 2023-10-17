@@ -7,11 +7,11 @@ cabal-version: 2.2
 name:           hashcons
 version:        0.1.0.0
 description:    Please see the README on GitHub at <https://github.com/githubuser/hashcons#readme>
-homepage:       https://github.com/githubuser/hashcons#readme
-bug-reports:    https://github.com/githubuser/hashcons/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2023 Author name here
+homepage:       https://github.com/karan9123/hashcons#readme
+bug-reports:    https://github.com/karan9123/hashcons/issues
+author:         Karan Ahluwalia
+maintainer:     karan9123@gmail.com
+copyright:      2023 Karan Ahluwalia
 license:        BSD-3-Clause
 license-file:   LICENSE
 build-type:     Simple
@@ -21,20 +21,23 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/hashcons
+  location: https://github.com/karan9123/hashcons
 
 library
   exposed-modules:
       Lib
+      LibPure
   other-modules:
       Paths_hashcons
   autogen-modules:
       Paths_hashcons
   hs-source-dirs:
       src
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -fno-warn-unused-top-binds
   build-depends:
       base >=4.7 && <5
+    , hashable >=1.2 && <1.5
+    , unordered-containers ==0.2.*
   default-language: Haskell2010
 
 executable hashcons-exe
@@ -45,10 +48,12 @@ executable hashcons-exe
       Paths_hashcons
   hs-source-dirs:
       app
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -fno-warn-unused-top-binds -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , hashable >=1.2 && <1.5
     , hashcons
+    , unordered-containers ==0.2.*
   default-language: Haskell2010
 
 test-suite hashcons-test
@@ -60,8 +65,13 @@ test-suite hashcons-test
       Paths_hashcons
   hs-source-dirs:
       test
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -fno-warn-unused-top-binds -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      HUnit >=1.6
+    , QuickCheck >=2.14
+    , async >=2.2
+    , base >=4.7 && <5
+    , hashable >=1.2 && <1.5
     , hashcons
+    , unordered-containers ==0.2.*
   default-language: Haskell2010
