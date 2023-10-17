@@ -1,4 +1,4 @@
-name: Haskell Stack CI
+name: Haskell CI
 
 on:
   push:
@@ -12,18 +12,17 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
-    # - uses: actions/setup-haskell@v1
-    #   with:
-    #     ghc-version: '9.4.6'
+    - name: Set up Haskell
+      uses: actions/setup-haskell@v1
+      with:
+        ghc-version: '9.4.6'  # or your desired GHC version
 
-
-    - name: Setup Haskell Stack
+    - name: Build
       run: |
-        curl -sSL https://get.haskellstack.org/ | sh
+        cabal update
+        cabal build --enable-tests
 
-    - name: Build and Test
-      run: |
-        stack setup
-        stack build --test
+    - name: Test
+      run: cabal test
