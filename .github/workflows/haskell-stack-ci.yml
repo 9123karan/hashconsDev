@@ -10,13 +10,6 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v1
-
-    - name: Setup Haskell Stack
-      run: |
-        curl -sSL https://get.haskellstack.org/ | sh
-
-    - name: Build with Test Flag
-      run: |
-        stack setup
-        stack build --test
+      uses: actions/checkout@v2
+    - name: running workFlow
+      uses: sol/run-haskell-tests@v1
