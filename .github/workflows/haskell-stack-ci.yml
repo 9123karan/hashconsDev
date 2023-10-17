@@ -11,18 +11,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
     - name: Set up Haskell
       uses: actions/setup-haskell@v1
       with:
-        ghc-version: '9.4.6'  # or your desired GHC version
+        ghc-version: '9.4.6' 
 
-    - name: Build
+    - name: Checkout code
+      uses: actions/checkout@v1
+
+    - name: Cache dependencies
+      uses: actions/cache@v1
+      with:
+        path: ~/.stack
+        key: ${{ runner.os }}-${{ hashFiles('stack.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-
+    - name: Test build
       run: |
-        cabal update
-        cabal build --enable-tests
+        stack build --test
 
-    - name: Test
-      run: cabal test
