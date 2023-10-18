@@ -2,10 +2,10 @@ name: test hashcons
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
