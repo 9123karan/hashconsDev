@@ -20,7 +20,7 @@ main = do
   _ <- runTestTT unitTests
 --   quickCheck prop_hashConsPure
 --   quickCheck prop_hashCons
-  putStrLn "Tests Completed"
+  putStrLn "Tests Completed.."
 
 
 unitTests :: Test
