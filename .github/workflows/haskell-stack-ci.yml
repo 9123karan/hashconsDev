@@ -11,18 +11,22 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    - name: running workFlow
-      uses: sol/run-haskell-tests@v1
-
-    - name: Set up Haskell
-      uses: actions/setup-haskell@v1
-      with:
-        ghc-version: '9.4.7' 
-
-    - name: Build
-      run: |
-        cabal update
-        cabal build --enable-tests
-        
-    - name: Test
+    - shell: bash
+      run: cabal update
+    - shell: bash
+      run: cabal build --enable-tests
+    - shell: bash
       run: cabal test
+
+    # - name: Set up Haskell
+    #   uses: actions/setup-haskell@v1
+    #   with:
+    #     ghc-version: '9.4.7' 
+
+    # - name: Build
+    #   run: |
+    #     cabal update
+    #     cabal build --enable-tests
+        
+    # - name: Test
+    #   run: cabal test
