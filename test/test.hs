@@ -1,7 +1,6 @@
 {-# LANGUAGE ScopedTypeVariables, DeriveAnyClass, BangPatterns, FlexibleInstances #-}
 
-import LibPure (hashCons, getValue, HCTable, newEmptyHCTable)
-import Lib(HC, HashCons, hashCons, getValue, getTable)
+import Internal as Lib (HC, HashCons, hashCons, getValue, getTable, Table , newEmptyPureHCTable , hashConsPure , printTablePure) 
 import Test.HUnit
 import Test.QuickCheck
 import Control.Concurrent.Async
@@ -20,7 +19,7 @@ main = do
   _ <- runTestTT unitTests
 --   quickCheck prop_hashConsPure
 --   quickCheck prop_hashCons
-  putStrLn "Tests."
+  putStrLn "Testing..."
 
 
 unitTests :: Test
@@ -33,18 +32,18 @@ unitTests = TestList [
 
 testHashConsPure :: Test
 testHashConsPure = TestCase $ do
-  let table0 = LibPure.newEmptyHCTable :: HCTable Int
-      (hc1, table1) = LibPure.hashCons 1 table0
-      (hc2, _) = LibPure.hashCons 2 table1
-  assertEqual "Testing hashCons" 1 (LibPure.getValue hc1)
-  assertEqual "Testing hashCons" 2 (LibPure.getValue hc2)
+  let table0 = newEmptyPureHCTable :: Table Int
+      (hc1, table1) = hashConsPure 1 table0
+      (hc2, _) = hashConsPure 2 table1
+  assertEqual "Testing hashCons" 1 (getValue hc1)
+  assertEqual "Testing hashCons" 2 (getValue hc2)
 
 testMultiThreadedHashCons :: Test
 testMultiThreadedHashCons = TestCase $ do
-  let table0 = LibPure.newEmptyHCTable :: HCTable Int
-  asyncs <- mapM (\n -> async $ return $ LibPure.hashCons n table0) [1..1000]
+  let table0 = newEmptyPureHCTable :: Table Int
+  asyncs <- mapM (\n -> async $ return $ hashConsPure n table0) [1..1000]
   results <- mapM wait asyncs
-  let values = map (LibPure.getValue . fst) results
+  let values = map (getValue . fst) results
   assertEqual "Testing multi-threaded hashCons" (nub [1..1000]) (nub values)
 
 -- prop_hashConsPure :: Property
