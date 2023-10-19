@@ -106,7 +106,7 @@ test-suite hashcons-test
 
     -- Test dependencies.
     build-depends:
-        base ^>=4.18.0.0,
+        base >=4.18.0.0,
         hashcons >= 0.0.0.0,
         HUnit >=1.6,
         -- QuickCheck >=2.14,
