@@ -14,6 +14,7 @@ module Internal(
 , hashConsPure -- Function which creates and returns HC and updated table
 , printTablePure -- Print the values of the Pure table passed
 , getKey -- Get the key from HashConsed
+, remove -- Removes the value from Pure Hash Cons Table
 ) where
 
 import System.IO.Unsafe
@@ -140,3 +141,7 @@ printTablePure :: Show a => Table a -> IO ()
 printTablePure hcTable = do
   forM_ (HashMap.toList hcTable) $ \(key, hConsed) -> do
       putStrLn $ "Key: " ++ show key ++ " Value: " ++ show hConsed
+
+-- | Remove a value from the pure hash-consing table
+remove :: Hashable a => a -> Table a -> Table a
+remove = HashMap.delete 
