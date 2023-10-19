@@ -1,8 +1,8 @@
 {-# LANGUAGE ScopedTypeVariables, DeriveAnyClass, BangPatterns, FlexibleInstances #-}
 
-import Internal as Lib (HC, HashCons, hashCons, getValue, getTable, Table , newEmptyPureHCTable , hashConsPure , printTablePure) 
+import Internal (HC, HashCons, hashCons, getValue, getTable, Table, newEmptyPureHCTable, hashConsPure)  --, printTablePure )-- 
 import Test.HUnit
-import Test.QuickCheck
+-- import Test.QuickCheck
 import Control.Concurrent.Async
 import Data.List (nub)
 import qualified Data.HashMap.Strict as HashMap
@@ -11,7 +11,6 @@ import System.Mem
 import Data.Hashable
 import Data.Bits (xor)
 import Control.Concurrent
-
 
 
 main :: IO ()
@@ -46,6 +45,7 @@ testMultiThreadedHashCons = TestCase $ do
   let values = map (getValue . fst) results
   assertEqual "Testing multi-threaded hashCons" (nub [1..1000]) (nub values)
 
+
 -- prop_hashConsPure :: Property
 -- prop_hashConsPure = forAll (listOf arbitrary) $ \(xs :: [Int]) ->
 --   let table0 = newEmptyHCTable :: HCTable Int
@@ -54,7 +54,8 @@ testMultiThreadedHashCons = TestCase $ do
 --       tableSize = HashMap.size finalTable
 --   in tableSize == length (nub xs)
 
-type BoolFormula = Lib.HC BoolFormula'
+
+type BoolFormula = HC BoolFormula'
 
 data BoolFormula' = 
     Var String 
@@ -68,23 +69,23 @@ instance Hashable BoolFormula' where
   hashWithSalt val (Or a1 a2) = hashWithSalt val a1 `xor` hashWithSalt val a2
 
 var :: String -> BoolFormula
-var str = Lib.hashCons (Var str)
+var str = hashCons (Var str)
 
 andd :: BoolFormula -> BoolFormula -> BoolFormula
-andd v1 v2 = Lib.hashCons (And v1 v2)
+andd v1 v2 = hashCons (And v1 v2)
 
 orr :: BoolFormula -> BoolFormula -> BoolFormula
-orr v1 v2 = Lib.hashCons (Or v1 v2)
+orr v1 v2 = hashCons (Or v1 v2)
 
 testHashCons :: Test
 testHashCons = TestList
     [ "test hashCons" ~: do
         let formula1 = var "a"
-        assertEqual "Testing hashCons" (Var "a") (Lib.getValue formula1)
+        assertEqual "Testing hashCons" (Var "a") (getValue formula1)
         performMajorGC
     , "test getTable" ~: do
         let !hc1 = var "b"
-            table = Lib.getTable hc1
+            table = getTable hc1
         tableContent <- readMVar table
         assertBool "Testing getTable" (not $ HashMap.null tableContent)
         performMajorGC
@@ -97,12 +98,12 @@ testGC = TestCase $ do
         !_formula = orr hc1 hc2
         key = Or hc1 hc2
 
-    !table1 <- readMVar (Lib.getTable hc1)
+    !table1 <- readMVar (getTable hc1)
     assertBool "Entry should exist before GC" (HashMap.member key table1)
 
     performMajorGC
     threadDelay 2000
  
-    let !table = Lib.getTable hc1
+    let !table = getTable hc1
     table2 <- readMVar table
     assertBool "Entry should not exist after GC" (not $ HashMap.member key table2)
