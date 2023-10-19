@@ -99,7 +99,7 @@ test-suite hashcons-test
     type:             exitcode-stdio-1.0
 
     -- Directories containing source files.
-    hs-source-dirs:   test, src
+    hs-source-dirs:   test
 
     -- The entrypoint to the test suite.
     main-is:          test.hs
