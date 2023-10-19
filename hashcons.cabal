@@ -23,10 +23,13 @@ name:               hashcons
 version:            0.1.0.0
 
 -- A short (one-line) description of the package.
-synopsis:           Type-Safe modular Hash consing library
+synopsis:           Type-Safe Modular Hash consing library
 
 -- A longer description of the package.
--- description:
+description: The Haskell Hash-Consing Library provides efficient data 
+            structures and operations for hash-consing, allowing users to 
+            reuse common data structures while preserving maximum sharing. 
+            This technique can save memory and speed up equality comparisons.
 
 -- URL for the project homepage or repository.
 homepage:           github.com/karan9123/hashcons
@@ -45,7 +48,7 @@ maintainer:         karan9123@gmail.com
 
 -- A copyright notice.
 -- copyright:
-category:           Data
+category:           Cache
 build-type:         Simple
 
 -- Extra doc files to be distributed with the package, such as a CHANGELOG or a README.
@@ -62,7 +65,7 @@ library
     import:           warnings
 
     -- Modules exported by the library.
-    exposed-modules:  Lib, LibPure
+    exposed-modules:  HashCons, HashConsPure
 
     -- Modules included in this library but not exported.
     other-modules: Internal

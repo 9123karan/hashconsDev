@@ -1,17 +1,18 @@
-module LibPure(
+module HashConsPure(
   HC
 , hashCons
-, newEmptyHCTable
+, newTable
 , getValue
 , printTable
 , Table
+, remove
 ) where
 
 import Data.Hashable
-import Internal(HC, getValue, Table, newEmptyPureHCTable, hashConsPure, printTablePure)
+import Internal(HC, getValue, Table, newEmptyPureHCTable, hashConsPure, printTablePure, remove)
 
-newEmptyHCTable :: Table a
-newEmptyHCTable = newEmptyPureHCTable
+newTable :: Table a
+newTable = newEmptyPureHCTable
 
 hashCons :: Hashable a => a -> Table a -> (HC a, Table a)
 hashCons = hashConsPure
