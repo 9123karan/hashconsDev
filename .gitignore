@@ -5,3 +5,4 @@ dist-*
 *.h
 .stack-work/
 .gitignore
+.vscode
