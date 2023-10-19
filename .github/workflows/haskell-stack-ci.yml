@@ -12,12 +12,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     - shell: bash
-      run: cabal update
-    - shell: bash
-      run: ghcup --version
-    - shell: bash
-      run: ghcup set ghc 9.4.7
-    - shell: bash
       run: cabal build --enable-tests
     - shell: bash
       run: cabal test
