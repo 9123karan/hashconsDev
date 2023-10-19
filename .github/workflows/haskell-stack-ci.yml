@@ -12,6 +12,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     - shell: bash
+      run: cabal update
+    - shell: bash
       run: cabal build --enable-tests
     - shell: bash
       run: cabal test
