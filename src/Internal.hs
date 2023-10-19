@@ -13,6 +13,7 @@ module Internal(
 , newEmptyPureHCTable -- Returns a Table
 , hashConsPure -- Function which creates and returns HC and updated table
 , printTablePure -- Print the values of the Pure table passed
+, getKey -- Get the key from HashConsed
 ) where
 
 import System.IO.Unsafe
@@ -26,23 +27,28 @@ import Control.Concurrent.MVar
 data HC a where
   HC :: (Eq a, Hashable a) => {
     value :: a
+  , hkey :: Int
   } -> HC a
 
 -- |  Eq logic of HC
 instance Eq (HC a) where
-    (HC x) == (HC y) = x == y
+    (HC x hkeyX) == (HC y hkeyY) = (hkeyX == hkeyY) && (x == y)
   
 -- |  Hash logic of HC based on its value
 instance Hashable (HC a) where
-    hashWithSalt s (HC x) = hashWithSalt s x
+    hashWithSalt s (HC x _) = hashWithSalt s x
 
 -- |  Show logic of HC 
 instance Show a => Show (HC a) where
-    show (HC x) = "HC: " ++ show x
+    show (HC x key) = "HC: " ++ show x ++ " hkey: " ++ show key
 
 -- |  Get the raw value from the HC
 getValue :: HC a -> a
-getValue (HC val) = val
+getValue (HC val _) = val
+
+-- |  Get the hash key from the HC
+getKey :: HC a -> Int
+getKey (HC _ key) = key
 
 {- | 
     Table type which holds weak references of HC 
@@ -69,7 +75,7 @@ addOrRetrieve val tableRef = do
     Nothing -> helper val tableRef     -- Value not found, insert a new one
     where
       helper valu hcTableRef = do
-        let hcValu = HC valu
+        let hcValu = HC valu (hash valu)
         -- Create a weak reference to the value, with a finalizer to remove it from the table when GC'ed
         weakRef <- mkWeakPtr hcValu (Just $ finalizer valu hcTableRef)
         hcTable <- takeMVar hcTableRef
@@ -108,8 +114,6 @@ printTable hcTable = do
             Just hConsed -> putStrLn $ "Key: " ++ show key ++ " Value: " ++ show hConsed
             Nothing -> putStrLn $ "Reference not found for Key: " ++ show key
 
-
-
 -- | Type alias for a hash consed table, mapping Int hash keys to `HConsed a` values.
 type Table a = HashMap.HashMap a (HC a)
 
@@ -128,7 +132,7 @@ hashConsPure val table =
   case HashMap.lookup val table of
     Just hConsed -> (hConsed, table)  -- Value found, return existing Hashconsed and original table
     Nothing -> 
-      let newHC = HC val
+      let newHC = HC val (hash val)
       in (newHC, HashMap.insert val newHC table)  -- Value not found, insert and return new table
 
 -- |  Print the contents of the hash-consing table

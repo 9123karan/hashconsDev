@@ -18,7 +18,7 @@ main = do
   _ <- runTestTT unitTests
 --   quickCheck prop_hashConsPure
 --   quickCheck prop_hashCons
-  putStrLn "Testing..."
+  putStrLn "Testing: "
 
 
 unitTests :: Test
@@ -71,8 +71,8 @@ instance Hashable BoolFormula' where
 var :: String -> BoolFormula
 var str = hashCons (Var str)
 
-andd :: BoolFormula -> BoolFormula -> BoolFormula
-andd v1 v2 = hashCons (And v1 v2)
+_andd :: BoolFormula -> BoolFormula -> BoolFormula
+_andd v1 v2 = hashCons (And v1 v2)
 
 orr :: BoolFormula -> BoolFormula -> BoolFormula
 orr v1 v2 = hashCons (Or v1 v2)
