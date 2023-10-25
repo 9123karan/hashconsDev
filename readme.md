@@ -63,7 +63,7 @@ For the pure version, users need to maintain the hash-consing table and ensure t
 ```haskell
 import HashConsPure as hcp
 
-type Expr = hc.HC Expr'
+type Expr = hcp.HC Expr'
 data Expr' = Lit Int | Add Expr Expr deriving (Eq, Hashable)
 
 -- Creating a new table
