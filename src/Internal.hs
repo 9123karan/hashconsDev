@@ -15,6 +15,7 @@ module Internal(
 , printTablePure -- Print the values of the Pure table passed
 , getKey -- Get the key from HashConsed
 , remove -- Removes the value from Pure Hash Cons Table
+, newHC -- Creates a new HC value
 ) where
 
 import System.IO.Unsafe
@@ -42,6 +43,10 @@ instance Hashable (HC a) where
 -- |  Show logic of HC 
 instance Show a => Show (HC a) where
     show (HC x key) = "HC: " ++ show x ++ " hkey: " ++ show key
+
+-- |  Create a new HC value
+newHC :: (Eq a, Hashable a) => a -> Int -> HC a
+newHC = HC 
 
 -- |  Get the raw value from the HC
 getValue :: HC a -> a

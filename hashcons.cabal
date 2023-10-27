@@ -58,14 +58,14 @@ extra-doc-files:    CHANGELOG.md
 -- extra-source-files:
 
 common warnings
-    ghc-options: -Wall -Wunused-top-binds
+    ghc-options: -Wall -Wunused-top-binds -Wunused-imports
 
 library
     -- Import common warning flags.
     import:           warnings
 
     -- Modules exported by the library.
-    exposed-modules:  HashCons, HashConsPure
+    exposed-modules:  HashCons, HashConsPure, HashConsSingleThreaded
 
     -- Modules included in this library but not exported.
     other-modules: Internal
@@ -93,7 +93,7 @@ test-suite hashcons-test
     default-language: Haskell2010
 
     -- Modules included in this executable, other than Main.
-    other-modules: Internal
+    other-modules: Internal, HashConsSingleThreaded
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
