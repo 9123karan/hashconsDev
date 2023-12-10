@@ -6,3 +6,4 @@ dist-*
 .stack-work/
 .gitignore
 .vscode
+./DS_Store
