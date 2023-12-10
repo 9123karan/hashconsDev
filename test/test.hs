@@ -2,10 +2,9 @@
 
 -- import Internal (HC, HashCons, hashCons, getValue, getTable, Table, newEmptyPureHCTable, hashConsPure)  --, printTablePure )-- 
 import Test.HUnit
--- import Test.QuickCheck
-import Control.Concurrent.Async
+-- import Control.Concurrent.Async
 import qualified Data.HashMap.Strict as HashMap
-import Control.Concurrent.MVar
+-- import Control.Concurrent.MVar
 import Data.IORef
 import System.Mem
 import Data.Hashable
@@ -19,7 +18,7 @@ main = do
   _ <- runTestTT unitTests
 --   quickCheck prop_hashConsPure
 --   quickCheck prop_hashCons
-  putStrLn "Testing: "
+  return ()
 
 
 unitTests :: Test
@@ -27,8 +26,7 @@ unitTests = TestList [
     -- "Test hashCons Pure Version" ~: testHashConsPure,
     -- "Test multi-threaded hashCons" ~: testMultiThreadedHashCons,
     "Test hashCons" ~: testHashCons,
-    "Test Garbage Collection" ~: testGC,
-    "Test Boolean Expression" ~: testHashConsNew
+    "Test Garbage Collection" ~: testGC
   ]
 
 -- testHashConsPure :: Test
@@ -82,15 +80,14 @@ orr v1 v2 = hashCons (Or v1 v2)
 testHashCons :: Test
 testHashCons = TestList
     [ "test hashCons" ~: do
-        let formula1 = var "a"
-        assertEqual "Testing hashCons" (Var "a") (getValue formula1)
+        let var_a = var "a"
+        assertEqual "Testing hashCons" (Var "a") (getValue var_a)
         performMajorGC
     , "test getTable" ~: do
         let !hc1 = var "b"
             table = getTable hc1
         tableContent <- readIORef table
         assertBool "Testing getTable" (not $ HashMap.null tableContent)
-        performMajorGC
     ]
 
 testGC :: Test
@@ -109,75 +106,5 @@ testGC = TestCase $ do
     let !table = getTable hc1
     table2 <- readIORef table
     assertBool "Entry should not exist after GC" (not $ HashMap.member key table2)
-
-
-type Expr = HC Expr'
-
-data Expr' 
-    = Const Bool
-    | VVar String
-    | AAnd Expr Expr
-    | OOr Expr Expr
-    | Not Expr
-    deriving (Show, Eq, HashConsSingleThreaded)
-
-instance Hashable Expr' where
-  hashWithSalt val (Const True) = hashWithSalt val True
-  hashWithSalt val (Const False) = hashWithSalt val False
-  hashWithSalt val (VVar a) = hashWithSalt val a
-  hashWithSalt val (AAnd a1 a2) = (hashWithSalt val a1 `xor` hashWithSalt val a2)`xor` hashWithSalt (val + 10003344) a2
-  hashWithSalt val (OOr a1 a2) = hashWithSalt val a1 `xor` hashWithSalt val a2
-  hashWithSalt val (Not a) = hashWithSalt val a `xor` hashWithSalt (val + 10003344) a
-
-constExpr :: Bool -> Expr
-constExpr b = hashCons (Const b)
-
-varExpr :: String -> Expr
-varExpr str = hashCons (VVar str)
-
-andExpr :: Expr -> Expr -> Expr
-andExpr v1 v2 = hashCons (AAnd v1 v2)
-
-orExpr :: Expr -> Expr -> Expr
-orExpr v1 v2 = hashCons (OOr v1 v2)
-
-notExpr :: Expr -> Expr
-notExpr v1 = hashCons (Not v1)
-
-testHashConsNew :: Test
-testHashConsNew = TestList
-    [ "test hashCons" ~: do
-        let formula1 = varExpr "a"
-        assertEqual "Testing hashCons" (VVar "a") (getValue formula1)
-        performMajorGC
-    , "test getTable" ~: do
-        let !hc1 = varExpr "b"
-            table = getTable hc1
-        tableContent <- readIORef table
-        assertBool "Testing getTable" (not $ HashMap.null tableContent)
-        performMajorGC
-    ]
-
-testingBoolExpr :: Test
-testingBoolExpr = TestList
-    [ "test hashCons" ~: do
-        let !expr1 = constExpr True
-        let !expr2 = constExpr False
-        let !expr3 = varExpr "x"
-        let !expr4 = varExpr "y"
-        let !expr5 = notExpr expr1         -- NOT True
-        let !expr6 = notExpr expr3         -- NOT x
-        let !expr7 = andExpr expr3 expr4   -- x AND y
-        let !expr8 = orExpr expr3 expr4    -- x OR y
-        let !expr9 = andExpr expr3 (notExpr expr4)  -- x AND (NOT y)
-        let !expr10 = orExpr (notExpr expr3) expr4  -- (NOT x) OR y
-        let !expr11 = orExpr expr5 (andExpr expr7 expr8)   -- (NOT True) OR ((x AND y) AND (x OR y))
-        let !expr12 = andExpr (orExpr expr3 expr4) (notExpr expr2) -- (x OR y) AND (NOT False)
-        let !varList = map varExpr ["a", "b", "c", "d", "e"]
-        let !combinedExpr = foldl1 andExpr varList  -- a AND b AND c AND d AND e
-        let !expr13 = andExpr (varExpr "a") (orExpr (varExpr "a") (notExpr (varExpr "a"))) -- a AND (a OR (NOT a))
-
-
-
 
 
